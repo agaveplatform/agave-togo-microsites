@@ -43,7 +43,7 @@ var AgaveToGo = angular.module("AgaveToGo", [
                     toastr.info(toastData);
                 } else if ('file' in data.message){
                     toastData = 'FILE - ' + data.event;
-                } else if ('job' in data.message){
+                } else if ('job' in data.message) {
                     toastData = 'JOB - ' + data.event;
                 } else if ('system' in data.message){
                     toastData = 'SYSTEM - ' + data.event;
@@ -51,6 +51,8 @@ var AgaveToGo = angular.module("AgaveToGo", [
                     toastData = data.event;
                 }
             }
+
+            toastr.info(toastData);
         });
     } else {
         App.alert(

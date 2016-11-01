@@ -555,6 +555,7 @@ angular.module('AgaveToGo').controller('AppsResourceRunController', function($sc
         var jobData = {
             appId: $scope.app.id,
             archive: true,
+            archiveSystem: $rootScope.$settings.storageSystemId,
             inputs: {},
             parameters: {}
         };
@@ -590,7 +591,7 @@ angular.module('AgaveToGo').controller('AppsResourceRunController', function($sc
                     associatedUuid: response.result.id,
                     event: '*',
                     persistent: true,
-                    url: 'https://realtime.prod.agaveapi.co/fpp'};
+                    url: 'https://9d1e23fc.fanoutcdn.com/fpp'};
 
                 var offlineNotification = {
                     associatedUuid: response.result.id,

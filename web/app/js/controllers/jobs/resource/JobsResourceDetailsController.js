@@ -44,7 +44,7 @@ angular.module('AgaveToGo').controller('JobsResourceDetailsController', function
                         associatedUuid: response.result.id,
                         event: '*',
                         persistent: true,
-                        url: 'https://realtime.prod.agaveapi.co/fpp'};
+                        url: 'https://9d1e23fc.fanoutcdn.com/fpp'};
 
                     var offlineNotification = {
                         associatedUuid: response.result.id,
