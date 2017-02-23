@@ -1,5 +1,5 @@
 {
-  "name": "togo-micro-app",
+  "name": "togo-microsite",
   "version": "1.0.0",
   "description": "Agave ToGo Microsites are a zero-hassle solution for small groups of users needing to automate and collaborate around specific tasks.",
   "main": "gulpfile.js",
@@ -25,7 +25,7 @@
     "bower": "^1.6.5"
   },
   "scripts": {
-    "postinstall": "node_modules/bower/bin/bower --allow-root install",
+    "postinstall": "node_modules/bower/bin/bower install || node_modules/gulp/bin/gulp.js sass minify",
 
     "start": "http-server -a localhost -p 9000 -c-1",
 
