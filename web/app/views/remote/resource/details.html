@@ -1,0 +1,152 @@
+<div class="row text-center" ng-show="requesting">
+    <div class="col-md-12">
+        <div class="loading-message">
+            <div class="block-spinner-bar">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-show="!requesting">
+    <div class="row">
+        <div class="col-xs-9">
+            <div ng-if="job" class="table-responsive">
+                <table class="table">
+                    <thead class="hidden-sm hidden-xs">
+                    <tr>
+                        <th class="col-sm-2"></th>
+                        <th class="col-sm-10"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-if="session.id">
+                        <td>ID</td>
+                        <td>{{session.id}}</td>
+                    </tr>
+                    <tr ng-if="session.name">
+                        <td>Name</td>
+                        <td>{{session.name}}</td>
+                    </tr>
+                    <tr ng-if="session.owner">
+                        <td>Owner</td>
+                        <td>{{session.owner}}</td>
+                    </tr>
+                    <tr ng-if="session.status">
+                        <td>Status</td>
+                        <td>{{session.status}}</td>
+                    </tr>
+                    <tr ng-if="session.executionSystem">
+                        <td>Execution System</td>
+                        <td><a href="#/systems/{{session.executionSystem}}">{{session.executionSystem}}</a></td>
+                    </tr>
+                    <tr ng-if="session.archive">
+                        <td>Archive</td>
+                        <td>{{session.archive}}</td>
+                    </tr>
+                    <tr ng-if="session.archiveSystem">
+                        <td>Archive System</td>
+                        <td><a href="#/systems/{{session.archiveSystem}}">{{session.archiveSystem}}</a></td>
+                    </tr>
+                    <tr ng-if="session.archivePath">
+                        <td>Archive Path</td>
+                        <td><a href="#/data/explorer/{{session.archiveSystem}}/{{session.archivePath}}">{{session.archivePath}}</a>
+                        </td>
+                    </tr>
+                    <tr ng-if="session.outputPath">
+                        <td>Output Path</td>
+                        <td>{{session.outputPath}}</td>
+                    </tr>
+                    <tr ng-if="session.batchQueue">
+                        <td>Batch Queue</td>
+                        <td>{{session.batchQueue}}</td>
+                    </tr>
+                    <tr ng-if="session.appId">
+                        <td>Application ID</td>
+                        <td><a href="#/apps/details">{{session.appId}}</a></td>
+                    </tr>
+                    <tr ng-if="session.inputs">
+                        <td>Inputs</td>
+                        <td>
+                            <div ng-repeat="(key,value) in session.inputs">
+                                {{key}}: {{value}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="session.created">
+                        <td>Created</td>
+                        <td>{{session.created}}</td>
+                    </tr>
+                    <tr ng-if="session.localId">
+                        <td>Local ID</td>
+                        <td>{{session.localId}}</td>
+                    </tr>
+                    <tr ng-if="session.maxRunTime">
+                        <td>Max Run Time</td>
+                        <td>{{session.maxRunTime}}</td>
+                    </tr>
+                    <tr ng-if="session.memoryPerNode">
+                        <td>Memory Per Node</td>
+                        <td>{{session.memoryPerNode}}</td>
+                    </tr>
+                    <tr ng-if="session.parameters">
+                        <td>Parameters</td>
+                        <td>
+                            <div ng-repeat="(key, value) in session.parameters">
+                                {{key}}: {{value}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr ng-if="session.processorsPerNode">
+                        <td>ID</td>
+                        <td>{{session.processorsPerNode}}</td>
+                    </tr>
+                    <tr ng-if="session.submitTime">
+                        <td>Submit Time</td>
+                        <td>{{session.submitTime}}</td>
+                    </tr>
+                    <tr ng-if="session.startTime">
+                        <td>Start Time</td>
+                        <td>{{session.startTime}}</td>
+                    </tr>
+                    <tr ng-if="session.endTime">
+                        <td>End Time</td>
+                        <td>{{session.endTime}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div ng-if="job" class="btn-group pull-right">
+                <a class="btn red btn-outline" href="#" data-toggle="dropdown">
+                    Actions
+                    <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu pull-right">
+                    <li ng-show="isActiveStatus(session.status)">
+                        <a ng-click="confirmAction('jobs', session, 'stop', sessions, $index)"
+                           role="button"> <i class="fa fa-stop"></i> Stop
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-click="browse(session.id)" role="button">
+                            <i class="fa fa-folder-open-o"></i> Browse
+                        </a>
+                    </li>
+                    <li ng-show="!isActiveStatus(session.status)">>
+                        <a href="#" ng-click="recreate(session.id)" role="button">
+                            <i class="fa fa-refresh"></i> Recreate
+                        </a>
+                    </li>
+                    <li>
+                        <a ng-click="confirmAction('jobs', session, 'delete', sessions, $index)" role="button">
+                            <i class="fa fa-trash-o"></i> Delete
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

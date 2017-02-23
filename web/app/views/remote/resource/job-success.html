@@ -1,0 +1,46 @@
+<div modal="jobSucess">
+  <div class="modal-header">
+    <h3 class="modal-title">Successful session request</h3>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xs-12">
+        <div ng-if="job" class="table-responsive">
+          <table class="table table-bordered">
+            <tbody>
+              <tr ng-if="session.id">
+                <td>ID</td>
+                <td>{{session.id}}</td>
+              </tr>
+              <tr ng-if="session.name">
+                <td>Name</td>
+                <td>{{session.name}}</td>
+              </tr>
+              <tr ng-if="session.status">
+                <td>Status</td>
+                <td>{{session.status}}</td>
+              </tr>
+              <tr ng-if="session.executionSystem">
+                <td>Execution System</td>
+                <td><a href="#/systems/{{session.executionSystem}}">{{session.executionSystem}}</a></td>
+              </tr>
+              <tr ng-if="session.outputPath">
+               <td>Output Path</td>
+               <td>{{session.outputPath}}</td>
+             </tr>
+             <tr ng-if="session.appId">
+               <td>Application ID</td>
+               <td>{{session.appId | sessionType }}</a></td>
+             </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-info" type="button" ui-sref="remote.session.viewer({id: session.id})"><i class="fa fa-info-circle" aria-hidden="true" ng-disabled="session.status === 'RUNNING'"></i> Join </button>
+    <!-- <a class="btn btn-primary" type="button" href="#/data/explorer/{{session.archiveSystem}}/{{session.archivePath}}"><i class="fa fa-file" aria-hidden="true"></i> Files</a> -->
+    <button class="btn btn-default" type="button" ng-click="close()"><i class="fa fa-sign-out" aria-hidden="true"></i> Exit</button>
+  </div>
+</div>

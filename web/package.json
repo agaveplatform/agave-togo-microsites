@@ -1,0 +1,32 @@
+{
+  "name": "togo-micro-app",
+  "version": "1.0.0",
+  "description": "Agave ToGo Microsites are a zero-hassle solution for small groups of users needing to automate and collaborate around specific tasks.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "dist": "node_modules/bowerwebpack/bin/bowerwebpack.js",
+    "postinstall": "node_modules/bower/bin/bower install && node_modules/gulp/bin/gulp.js sass minify",
+    "start": "http-server -a localhost -p 8080 -c-1",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rion Dooley <dooley@tacc.utexas.edu>",
+  "license": "BSD-2-Clause",
+  "repository": "https://bitbucket.org/agaveapi/agave-togo",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-connect": "^4.1.0",
+    "gulp-ignore": "^2.0.1",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-prettify": "^0.3.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-rtlcss": "^0.1.4",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.2",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "dependencies": {
+    "bower": "^1.6.5",
+    "gulp-sass": "^4.0.0",
+    "webpack": "^1.13.3"
+  }
+}
