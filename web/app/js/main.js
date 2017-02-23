@@ -81,6 +81,20 @@ AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
         //appId: 'cloud-runner-0.1.0',
         // appId: 'wc-osg-1.0.0',
         tenantId: 'agave.prod',
+        remote: {
+            terminal: {
+                enabled: true,
+                appId: 'dooley-terminal-1.0'
+            },
+            vnc: {
+                enabled: true,
+                appId: 'dooley-vnc-1.0'
+            },
+            jupyter: {
+                enabled: true,
+                appId: 'dooley-jupyter-notebook-stampede-4.2.3'
+            }
+        },
         oauth: {
             clients: OAuthClients,
             scope: 'PRODUCTION'
@@ -267,7 +281,7 @@ AgaveToGo.config(['$controllerProvider', function($controllerProvider) {
 AgaveToGo.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
     $scope.$on('$viewContentLoaded', function() {
         App.initComponents(); // init core components
-        //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
+        //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive
     });
 
     $scope.$on('oauth:login', function(event, token) {

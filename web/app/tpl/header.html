@@ -192,6 +192,25 @@
                         Data
                     </a>
                 </li>
+                <li class="menu-dropdown classic-menu-dropdown ">
+                    <a data-hover="megamenu-dropdown" data-toggle="dropdown" href="javascript:;">
+                        Remote Sessions <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu pull-left">
+                        <li ng-if="remote.jupyter.length > 0">
+                            <a ui-sref="remote({type:'vnc'})">
+                                <i class="fa fa-desktop"></i> VNC </a>
+                        </li>
+                        <li ng-if="remote.jupyter.length > 0">
+                            <a ui-sref="remote({type:'jupyter'})">
+                                <i class="fa fa-book"></i> Jupyter </a>
+                        </li>
+                        <li ng-if="remote.terminal.length > 0">
+                            <a ui-href="remote({type:'terminal'})">
+                                <i class="fa fa-terminal"></i> Terminal </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-- Full submenu custom icons -->
                 <li class="menu-dropdown classic-menu-dropdown ">
                     <a data-hover="megamenu-dropdown" data-toggle="dropdown" href="javascript:;"> About
