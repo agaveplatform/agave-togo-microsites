@@ -8,7 +8,7 @@ angular.module('AgaveToGo').controller('UserProfileController', function($rootSc
 
     if ($state.current.name === "profile"){
         $state.go("profile.account");
-    };
+    }
 
     if ($stateParams.username) {
         $scope.username = $stateParams.username;

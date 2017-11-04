@@ -2,13 +2,15 @@ var webpack = require('webpack');
 
 module.exports = {
     resolve: {
-        modulesDirectories: ["web_modules", "node_modules", "bower_components"]
+        modulesDirectories: ["web", "node_modules", "bower_components"]
     },
     entry: {
-        login: "./src/js/login/app.js",
-        room: './src/js/app.js',
-        screen: './src/js/screen/app.js',
-        whiteboard: './src/js/whiteboard/app.js'
+        login: "./dist/js/login.js",
+        dashboard: './dist/js/app.js',
+        chat: './dist/js/chat.js',
+        browser: './dist/js/browser.js',
+        ide: './dist/js/chat.js',
+        remote: './dist/js/remote.js'
     },
     output: {
         path: './public/js/',

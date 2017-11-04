@@ -77,21 +77,21 @@ AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
     // supported languages
     var settings = {
         storageSystemId: 'data.agaveapi.co',
-        appId: 'fork-1.0',
-        //appId: 'cloud-runner-0.1.0',
+        // appId: 'fork-1.0',
+        appId: 'cloud-runner-0.1.0u1',
         // appId: 'wc-osg-1.0.0',
         tenantId: 'agave.prod',
         remote: {
             terminal: {
-                enabled: true,
+                enabled: false,
                 appId: 'dooley-terminal-1.0'
             },
             vnc: {
-                enabled: true,
+                enabled: false,
                 appId: 'dooley-vnc-1.0'
             },
             jupyter: {
-                enabled: true,
+                enabled: false,
                 appId: 'dooley-jupyter-notebook-stampede-4.2.3'
             }
         },
@@ -1023,7 +1023,49 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Directory Search'}
         })
 
+        /**********************************************************************/
+        /**********************************************************************/
+        /***                                                                ***/
+        /***                    Remotes Routes                              ***/
+        /***                                                                ***/
+        /**********************************************************************/
+        /**********************************************************************/
 
+        // User Profile
+        .state("remote", {
+            url: "/remote",
+            templateUrl: "views/remote/main.html",
+            data: {pageTitle: 'Remote Interactive Sessions'},
+            controller: "RemoteInterativeSessionController",
+            resolve: {
+                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'AgaveToGo',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
+                        files: [
+                            '../assets/pages/css/profile.css',
+                            '../assets/pages/css/search.css',
+                            'js/controllers/remote.js'
+                        ]
+                    });
+                }]
+            }
+        })
+
+
+        // // User Profile Account
+        // .state("profile.account", {
+        //     url: "/account",
+        //     templateUrl: "views/profiles/account.html",
+        //     data: {pageTitle: 'User Account'}
+        // })
+        //
+        // // User Profile Search
+        // .state("profile.search", {
+        //     url: "/search",
+        //     templateUrl: "views/profiles/search.html",
+        //     data: {pageTitle: 'Directory Search'}
+        // })
 
 }]);
 
