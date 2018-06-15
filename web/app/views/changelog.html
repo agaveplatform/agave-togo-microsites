@@ -1,0 +1,77 @@
+<!-- BEGIN PAGE BREADCRUMBS -->
+<ul class="page-breadcrumb breadcrumb">
+    <li>
+        <a ui-sref="home">Home</a>
+        <i class="fa fa-circle"></i>
+    </li>
+    <li class="active"> Changelog</li>
+</ul>
+<!-- END PAGE BREADCRUMBS -->
+<!-- BEGIN PAGE CONTENT INNER -->
+<div class="page-content-inner">
+    <div class="blog-page blog-content-2">
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="portlet light bordered">
+                    <div class="changelog-list portlet-body">
+                        <div class="changelog-entry" ng-repeat="changelogEntry in changelog">
+                            <h4 class="list-heading"> {{ changelogEntry.version }} - {{ changelogEntry.date | amDateFormat:'MMM DD, YYYY' }} </h4>
+                            <h5 class="list-heading"> Added
+                                <span class="label label-lg label-default ng-binding pull-right mrm">{{ changelogEntry.version }}</span>
+                            </h5>
+                            <ul class="feeds list-items">
+                                <li ng-repeat="entry in changelogEntry.items.added track by $index" class="changelog-item">
+                                    <div class="col1">
+                                        <div class="cont">
+                                            <div class="cont-col1">
+                                                <div class="label label-sm label-success">
+                                                    <i class="fa fa-plus"></i>
+                                                </div>
+                                                <div class="details pls inline-block">{{entry}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <h5 class="list-heading"> Changed
+                                <span class="label label-lg label-default ng-binding pull-right mrm">{{ changelogEntry.version }}</span>
+                            </h5>
+                            <ul class="feeds list-items">
+                                <li ng-repeat="entry in changelogEntry.items.changed track by $index" class="changelog-item">
+                                    <div class="col1">
+                                        <div class="cont">
+                                            <div class="cont-col1">
+                                                <div class="label label-sm label-info">
+                                                    <i class="fa fa-refresh"></i>
+                                                </div>
+                                                <div class="details pls inline-block">{{entry}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <h5 class="list-heading"> Removed
+                                <span class="label label-lg label-default ng-binding pull-right mrm">{{ changelogEntry.version }}</span>
+                            </h5>
+                            <ul class="feeds list-items">
+                                <li ng-repeat="entry in changelogEntry.items.removed track by $index" class="changelog-item">
+                                    <div class="col1">
+                                        <div class="cont">
+                                            <div class="cont-col1">
+                                                <div class="label label-sm label-danger">
+                                                    <i class="fa fa-times"></i>
+                                                </div>
+                                                <div class="details pls inline-block">{{entry}}</div>
+                                            </div>
+                                        </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END PAGE CONTENT INNER -->

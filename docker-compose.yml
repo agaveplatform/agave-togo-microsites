@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+
+  microsite:
+    build:
+      context: .
+    image: agaveplatform/microsite
+    restart: on-failure
+    ports:
+      - '8080:8080'
+#    volumes:
+#      - '.:/usr/src/app:ro'
+    labels:
+      - "traefik.backend=togo"
+      - "traefik.frontend.rule=Host:microsite.togo.agaveplatform.org"
+      - "traefik.port=8080"
+      - "traefik.protocol=http"
+      - "traefik.frontend.entryPoints=https,http"
+    networks:
+      - togo
+
+networks:
+  togo:

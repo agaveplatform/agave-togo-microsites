@@ -24,7 +24,7 @@ yarn
 To build the source, minify all relevant files, and prepare for release, run the following gulp command:
 
 ```
-gulp sass:watch
+gulp dist
 ```
 
 If you are developing and would like the css to be rebuilt on each change, run the alternate command:

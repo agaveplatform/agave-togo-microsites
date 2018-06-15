@@ -22,6 +22,7 @@ var AgaveToGo = angular.module("AgaveToGo", [
     'ActionsService',
     'RolesService',
     'TagsService',
+    'ChangelogParserService',
     'PermissionsService',
     'pascalprecht.translate',
     'schemaForm',
@@ -35,7 +36,7 @@ var AgaveToGo = angular.module("AgaveToGo", [
 
 AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
     // supported languages
-    var settings = {
+    return settings = {
         storageSystemId: 'data.agaveapi.co',
         appId: 'cloud-runner-0.1.0u1',
         tenantId: 'agave.prod',
@@ -54,10 +55,6 @@ AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
         globalPath: '../assets/global',
         layoutPath: '../assets/layouts/compute',
     };
-
-    $rootScope.settings = settings;
-
-    return settings;
 }]);
 
 /***************************************************
@@ -491,6 +488,35 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             }
         })
 
+        .state('changelog', {
+            url: "/changelog",
+            templateUrl: "views/changelog.html",
+            data: {
+                pageTitle: 'Changelog'
+            },
+            controller: "ChangelogController",
+            resolve: {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
+                    return $ocLazyLoad.load({
+                        name: 'AgaveToGo',
+                        insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+                        files: [
+                            'js/controllers/ChangelogController.js'
+                        ]
+                    });
+                }],
+                resolvedChangelog: [ 'deps', 'ChangelogParser', function(deps, ChangelogParser) {
+                    return ChangelogParser.latest().then(
+                        function(data) {
+                            return data;
+                        },
+                        function(err) {
+                            console.error(err);
+                        });
+                }]
+            }
+        })
+
         // 404 Page
         .state('fourofour', {
             url: "/404",
@@ -920,7 +946,16 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
                             insertBefore: '#ng_load_plugins_before',
                             files: [
                                 "js/services/MessageService.js",
-                                "js/controllers/data/FileExplorerController.js"
+                                "js/controllers/data/FileExplorerController.js",
+                                '../bower_components/codemirror/lib/codemirror.css',
+                                '../bower_components/codemirror/theme/neo.css',
+                                '../bower_components/codemirror/theme/solarized.css',
+                                '../bower_components/codemirror/mode/javascript/javascript.js',
+                                '../bower_components/codemirror/mode/markdown/markdown.js',
+                                '../bower_components/codemirror/mode/clike/clike.js',
+                                '../bower_components/codemirror/mode/shell/shell.js',
+                                '../bower_components/codemirror/mode/python/python.js',
+                                '../bower_components/angular-ui-codemirror/ui-codemirror.min.js',
                             ]
                         }
                     ]);
@@ -944,7 +979,16 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
                             files: [
                                 /********* File Manager ******/
                                 "js/services/MessageService.js",
-                                "js/controllers/data/FileExplorerController.js"
+                                "js/controllers/data/FileExplorerController.js",
+                                '../bower_components/codemirror/lib/codemirror.css',
+                                '../bower_components/codemirror/theme/neo.css',
+                                '../bower_components/codemirror/theme/solarized.css',
+                                '../bower_components/codemirror/mode/javascript/javascript.js',
+                                '../bower_components/codemirror/mode/markdown/markdown.js',
+                                '../bower_components/codemirror/mode/clike/clike.js',
+                                '../bower_components/codemirror/mode/shell/shell.js',
+                                '../bower_components/codemirror/mode/python/python.js',
+                                '../bower_components/angular-ui-codemirror/ui-codemirror.min.js',
                             ]
                         }
                     ]);
@@ -1046,7 +1090,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
 AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$localStorage', '$window', '$location', '$timeout', 'CacheFactory', 'ProfilesController', 'TenantsController', 'MessageService', '$translate', 'Configuration', 'Storage',
     function ($rootScope, settings, $state, $http, $templateCache, $localStorage, $window, $location, $timeout, CacheFactory, ProfilesController, TenantsController, MessageService, $translate, Configuration, Storage) {
     $rootScope.$state = $state; // state to be accessed from view
-    $rootScope.$settings = settings; // state to be accessed from view
+    $rootScope.settings = settings; // state to be accessed from view
 
     Storage.use('localStorage');
 
@@ -1127,6 +1171,22 @@ AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$
             }
         }
     });
+
+        $rootScope.$on("$stateChangeError", console.log.bind(console));
+
+        $rootScope.$on('$stateChangeError', function (event, toState, toParams, fromState, fromParams) {
+            console.log('$stateChangeError - fired when an error occurs during transition.');
+            console.log(arguments);
+            $state.go('admin.error');
+        });
+
+        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+            console.log('$stateChangeSuccess to ' + toState.name + ' - fired once the state transition from ' + fromState.name + ' is complete.');
+
+            if (toState.templateUrl) {
+                $templateCache.remove(toState.templateUrl);
+            }
+        });
 
     $rootScope.$on('oauth:login', function (event, token) {
         $localStorage.token = token;

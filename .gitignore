@@ -1,0 +1,29 @@
+npm-debug.log
+dist
+.tmp
+bower_components
+*.DS_Store
+.idea
+
+# api dependencies
+api/node_modules
+api/node_modules
+api/logs
+
+# api custom configs
+api/config/app/vdj_pipe
+api/config/systems/*
+
+
+
+# web dependencies
+web/node_modules
+web/bower_components
+
+# ignore compiled sass and minified assets
+web/assets/global/css
+web/assets/global/plugins/bootstrap/css
+web/assets/layouts/layout/css
+web/assets/layouts/compute/css
+web/assets/pages/css
+web/assets/*.min.js
