@@ -1,0 +1,13 @@
+{
+  "name": "agave-angularjs-sdk",
+  "homepage": "https://github.com/deardooley/agave-angularjs-sdk",
+  "_release": "1a1d60307b",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1a1d60307b587d189bf3a50baed9a8e4b0d0b11d"
+  },
+  "_source": "https://github.com/deardooley/agave-angularjs-sdk.git",
+  "_target": "master",
+  "_originalSource": "git+https://github.com/deardooley/agave-angularjs-sdk.git"
+}

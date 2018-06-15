@@ -13,7 +13,7 @@ services:
 #      - '.:/usr/src/app:ro'
     labels:
       - "traefik.backend=togo"
-      - "traefik.frontend.rule=Host:microsite.togo.agaveplatform.org"
+      - "traefik.frontend.rule=Host:microsites.agaveplatform.org"
       - "traefik.port=8080"
       - "traefik.protocol=http"
       - "traefik.frontend.entryPoints=https,http"
