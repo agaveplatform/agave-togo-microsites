@@ -5,7 +5,7 @@ angular.module('AgaveToGo').controller('LoginController', function ($injector, $
     $scope.useImplicit = true;
     $scope.randomState = function() {
         return (Math.ceil(Math.random() * 9));
-    }
+    };
 
     $scope.user = ($localStorage.client && angular.copy($localStorage.client)) || {
             username: '',
@@ -16,8 +16,8 @@ angular.module('AgaveToGo').controller('LoginController', function ($injector, $
     };
 
     $scope.getTenantByCode = function (tenantId) {
-        if ($rootScope.$settings.tenants[tenantId]) {
-            return $rootScope.$settings.tenants[tenantId];
+        if ($rootScope.settings.tenants[tenantId]) {
+            return $rootScope.settings.tenants[tenantId];
         } else {
             App.alert(
                 {
@@ -28,8 +28,15 @@ angular.module('AgaveToGo').controller('LoginController', function ($injector, $
         }
     };
 
-    $scope.tenant = $rootScope.$settings.tenants[$rootScope.$settings.tenantId];
+    $scope.tenant = $rootScope.settings.tenants[$rootScope.settings.tenantId];
 
+    /**
+     * Fetches access token by walking a Password Flow when the user has provided a client key and secret
+     *
+     * @param user
+     * @param options
+     * @returns {PromiseLike<T> | Promise<T>}
+     */
     var getAccessToken = function(user, options) {
         // Check if `user` has required properties.
         if (!user || !user.username || !user.password) {
@@ -62,7 +69,7 @@ angular.module('AgaveToGo').controller('LoginController', function ($injector, $
             function(response) {
                 $rootScope.broadcast('oauth:denied');
             });
-    }
+    };
 
     /**
      * Retrieves the `refresh_token` and stores the `response.data` on cookies

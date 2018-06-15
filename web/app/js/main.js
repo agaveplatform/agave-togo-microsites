@@ -2,7 +2,7 @@
  Agave ToGo Microsite Main Script
  ***/
 var AgaveToGo = angular.module("AgaveToGo", [
-    'AgavePlatformScienceAPILib',
+    'agave.sdk',
     'angular-cache',
     'angularMoment',
     'angularUtils.directives.dirPagination',
@@ -28,73 +28,17 @@ var AgaveToGo = angular.module("AgaveToGo", [
     'schemaFormWizard',
     'timer',
     'toastr',
-    'ngPasswordStrength'
-]).service('NotificationsService',['$rootScope', '$localStorage', 'MetaController', 'toastr', function($rootScope, $localStorage, MetaController, toastr){
-    if (typeof $localStorage.tenant !== 'undefined' && typeof $localStorage.activeProfile !== 'undefined' && $localStorage.activeProfile) {
-        this.client = new Fpp.Client('https://48e3f6fe.fanoutcdn.com/fpp');
-        this.channel = this.client.Channel($localStorage.tenant.code + '/' + $localStorage.activeProfile.username);
-        this.channel.on('data', function (data) {
-            var message = {};
-            if (data.event === 'FORCED_EVENT'){
-                toastData = 'FORCED_ EVENT - ' + data.source;
-            } else {
-                if ('app' in data.message){
-                    toastData = 'APP - ' + data.event;
-                    toastr.info(toastData);
-                } else if ('file' in data.message){
-                    toastData = 'FILE - ' + data.event;
-                } else if ('job' in data.message) {
-                    toastData = 'JOB - ' + data.event;
-                } else if ('system' in data.message){
-                    toastData = 'SYSTEM - ' + data.event;
-                } else {
-                    toastData = data.event;
-                }
-            }
+    'FileManagerApp',
+    'ngPasswordStrength',
+    'ngclipboard'
+]);
 
-            toastr.info(toastData);
-        });
-    } else {
-        App.alert(
-            {
-                type: 'danger',
-                message: 'Error: Invalid Credentials'
-            }
-        );
-    }
-
-}]);
-
-
-/**********************************************************************/
-/**********************************************************************/
-/***                                                                ***/
-/***            Agave ToGo Microsite global settings                ***/
-/***                                                                ***/
-/**********************************************************************/
-/**********************************************************************/
 AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
     // supported languages
     var settings = {
         storageSystemId: 'data.agaveapi.co',
-        // appId: 'fork-1.0',
         appId: 'cloud-runner-0.1.0u1',
-        // appId: 'wc-osg-1.0.0',
         tenantId: 'agave.prod',
-        remote: {
-            terminal: {
-                enabled: false,
-                appId: 'dooley-terminal-1.0'
-            },
-            vnc: {
-                enabled: false,
-                appId: 'dooley-vnc-1.0'
-            },
-            jupyter: {
-                enabled: false,
-                appId: 'dooley-jupyter-notebook-stampede-4.2.3'
-            }
-        },
         oauth: {
             clients: OAuthClients,
             scope: 'PRODUCTION'
@@ -123,7 +67,7 @@ AgaveToGo.factory('settings', ['$rootScope', function($rootScope) {
  ***************************************************/
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
-AgaveToGo.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
+AgaveToGo.config(['$ocLazyLoadProvider', function ($ocLazyLoadProvider) {
     $ocLazyLoadProvider.config({
         debug: true,
         modules: [
@@ -139,7 +83,7 @@ AgaveToGo.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
     });
 }]);
 
-AgaveToGo.config(function(toastrConfig) {
+AgaveToGo.config(function (toastrConfig) {
     angular.extend(toastrConfig, {
         allowHtml: false,
         autoDismiss: true,
@@ -157,7 +101,7 @@ AgaveToGo.config(function(toastrConfig) {
     });
 });
 
-AgaveToGo.config(function($locationProvider) {
+AgaveToGo.config(function ($locationProvider) {
     $locationProvider.html5Mode({
         enabled: false,
         //hashPrefix: '!',
@@ -165,7 +109,28 @@ AgaveToGo.config(function($locationProvider) {
     });
 });
 
-AgaveToGo.config(function($translateProvider) {
+AgaveToGo.config(function (fileManagerConfigProvider) {
+    fileManagerConfigProvider.set({
+        tplPath: '../bower_components/angular-filebrowser/src/templates',
+        allowedActions: {
+            rename: true,
+            copy: true,
+            edit: true,
+            changePermissions: true,
+            compress: false,
+            compressChooseName: true,
+            extract: false,
+            download: true,
+            preview: true,
+            remove: true,
+            postits: true,
+            publish: false,
+            notifications: true
+        }
+    });
+});
+
+AgaveToGo.config(function ($translateProvider) {
     $translateProvider.translations('en', {
         error_apps_add: 'Error: Could not submit app',
         error_apps_details: 'Error: Could not retrieve app',
@@ -228,7 +193,6 @@ AgaveToGo.config(function($translateProvider) {
         success_notifications_update: 'Success: updated ',
 
 
-
         success_systems_roles: 'Success: updated roles for ',
         setDefault: 'set to default',
         unsetDefault: 'unset default'
@@ -238,7 +202,7 @@ AgaveToGo.config(function($translateProvider) {
 });
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
-AgaveToGo.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
+AgaveToGo.config(['$ocLazyLoadProvider', function ($ocLazyLoadProvider) {
     $ocLazyLoadProvider.config({
         debug: true,
         modules: [
@@ -258,7 +222,7 @@ AgaveToGo.constant('angularMomentConfig', {
     timezone: 'America/Chicago' // optional
 });
 
-AgaveToGo.config(function($locationProvider) {
+AgaveToGo.config(function ($locationProvider) {
     $locationProvider.html5Mode({
         enabled: false,
         //hashPrefix: '!',
@@ -267,7 +231,7 @@ AgaveToGo.config(function($locationProvider) {
 });
 
 //AngularJS v1.3.x workaround for old style controller declarition in HTML
-AgaveToGo.config(['$controllerProvider', function($controllerProvider) {
+AgaveToGo.config(['$controllerProvider', function ($controllerProvider) {
     // this option might be handy for migrating old apps, but please don't use it
     // in new ones!
     $controllerProvider.allowGlobals();
@@ -278,33 +242,33 @@ AgaveToGo.config(['$controllerProvider', function($controllerProvider) {
  *********************************************/
 
 /* Setup App Main Controller */
-AgaveToGo.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
-    $scope.$on('$viewContentLoaded', function() {
+AgaveToGo.controller('AppController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    $scope.$on('$viewContentLoaded', function () {
         App.initComponents(); // init core components
         //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive
     });
 
-    $scope.$on('oauth:login', function(event, token) {
+    $scope.$on('oauth:login', function (event, token) {
         console.log('AppController: Authorized third party app with token', token.access_token);
     });
 
-    $scope.$on('oauth:logout', function(event) {
+    $scope.$on('oauth:logout', function (event) {
         console.log('AppController: The user has signed out');
     });
 
-    $scope.$on('oauth:loggedOut', function(event) {
+    $scope.$on('oauth:loggedOut', function (event) {
         console.log('AppController: The user is not signed in');
     });
 
-    $scope.$on('oauth:denied', function(event) {
+    $scope.$on('oauth:denied', function (event) {
         console.log('AppController: The user did not authorize the third party app');
     });
 
-    $scope.$on('oauth:expired', function(event) {
+    $scope.$on('oauth:expired', function (event) {
         console.log('AppController: The access token is expired. Please refresh.');
     });
 
-    $scope.$on('oauth:profile', function(profile) {
+    $scope.$on('oauth:profile', function (profile) {
         console.log('AppController: User profile data retrieved: ', profile);
     });
 }]);
@@ -316,14 +280,14 @@ AgaveToGo.controller('AppController', ['$scope', '$rootScope', function($scope, 
  ***/
 
 /* Setup Layout Part - Header */
-AgaveToGo.controller('HeaderController', ['$scope', '$localStorage', '$timeout', '$filter', 'settings', 'StatusIoController', 'JobsController', 'moment', 'amMoment', 'Commons', 'ProfilesController', function($scope, $localStorage, $timeout, $filter, settings, StatusIoController, JobsController, moment, amMoment, Commons, ProfilesController) {
+AgaveToGo.controller('HeaderController', ['$scope', '$localStorage', '$timeout', '$filter', 'settings', 'StatusIoController', 'JobsController', 'moment', 'amMoment', 'Commons', 'ProfilesController', function ($scope, $localStorage, $timeout, $filter, settings, StatusIoController, JobsController, moment, amMoment, Commons, ProfilesController) {
 
     $scope.authenticatedUser = $localStorage.activeProfile;
     $scope.tenant = settings.tenants[0];
 
     $scope.tokenCountdown = 0;
     // update current countdown time until token expires
-    if (typeof $localStorage.token !== 'undefined'){
+    if (typeof $localStorage.token !== 'undefined') {
         var currentDate = new Date();
         var expirationDate = Date.parse($localStorage.token.expires_at) || currentDate;
         var diff = Math.abs((expirationDate - currentDate) / 60000);
@@ -376,8 +340,10 @@ AgaveToGo.controller('HeaderController', ['$scope', '$localStorage', '$timeout',
             });
     }
 
-    $scope.$watch(function () { return $localStorage.activeProfile; },function(newProfile,oldProfile){
-        $timeout(function() {
+    $scope.$watch(function () {
+        return $localStorage.activeProfile;
+    }, function (newProfile, oldProfile) {
+        $timeout(function () {
             if (newProfile !== $scope.activeProfile) {
                 $scope.activeProfile = newProfile;
             }
@@ -385,24 +351,23 @@ AgaveToGo.controller('HeaderController', ['$scope', '$localStorage', '$timeout',
     });
 
     // default and refresh the platform status feed
-    $scope.platformStatus = { status:'Up', statusCode: 100, incidents: [], issues:[]};
+    $scope.platformStatus = {status: 'Up', statusCode: 100, incidents: [], issues: []};
 
     StatusIoController.listStatuses().then(
-
-        function(data) {
+        function (data) {
             var issues = [];
-            for (var i=0; i<data.result.status.length; i++) {
+            for (var i = 0; i < data.result.status.length; i++) {
                 if (data.result.status[i].status_code !== 100) {
                     issues.push({
                         "component": data.result.status[i].name,
                         "container": data.result.status[i].containers[0].name,
                         "status": data.result.status[i].status,
-                        "statusCode" : data.result.status[i].status_code,
+                        "statusCode": data.result.status[i].status_code,
                         "updated": data.result.status[i].updated
                     });
                 }
             }
-            setTimeout(function() {
+            setTimeout(function () {
                 $scope.platformStatus.incidents = data.result.incidents;
                 $scope.platformStatus.status = data.result.status_overall.status;
                 $scope.platformStatus.statusCode = data.result.status_overall.status_code;
@@ -411,54 +376,62 @@ AgaveToGo.controller('HeaderController', ['$scope', '$localStorage', '$timeout',
             }, 0);
 
         },
-        function(data) {
+        function (data) {
 
         }
     );
 
-    $scope.$on('$includeContentLoaded', function() {
+    $scope.$on('$includeContentLoaded', function () {
         Layout.initHeader(); // init header
 
-        $timeout(function() {
+        $timeout(function () {
             $scope.tenant = settings.tenants[0];
         }, 500);
     });
 }]);
 
 /* Setup Layout Part - Sidebar */
-AgaveToGo.controller('SidebarController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
+AgaveToGo.controller('SidebarController', ['$scope', function ($scope) {
+    $scope.$on('$includeContentLoaded', function () {
         Layout.initSidebar($state); // init sidebar
     });
 }]);
 
 /* Setup Layout Part - Sidebar */
-AgaveToGo.controller('PageHeadController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
+AgaveToGo.controller('PageHeadController', ['$scope', function ($scope) {
+    $scope.$on('$includeContentLoaded', function () {
         Demo.init(); // init theme panel
     });
 }]);
 
 /* Setup Layout Part - Theme Panel */
-AgaveToGo.controller('ThemePanelController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
+AgaveToGo.controller('ThemePanelController', ['$scope', function ($scope) {
+    $scope.$on('$includeContentLoaded', function () {
         Demo.init(); // init theme panel
     });
 }]);
 
 /* Setup Layout Part - Footer */
-AgaveToGo.controller('FooterController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
+AgaveToGo.controller('FooterController', ['$scope', function ($scope) {
+    $scope.$on('$includeContentLoaded', function () {
         Layout.initFooter(); // init footer
     });
 }]);
 
 /* Setup Rounting For All Pages */
-AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', function($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
+AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryProvider', function ($stateProvider, $urlRouterProvider, $urlMatcherFactoryProvider) {
 
-    function valToString(val) { return val != null ? val.toString() : val; }
-    function valFromString(val) { return val != null ? val.toString() : val; }
-    function regexpMatches(val) { /*jshint validthis:true */ return this.pattern.test(val); }
+    function valToString(val) {
+        return val != null ? val.toString() : val;
+    }
+
+    function valFromString(val) {
+        return val != null ? val.toString() : val;
+    }
+
+    function regexpMatches(val) { /*jshint validthis:true */
+        return this.pattern.test(val);
+    }
 
     // Redirect any unmatched url
     $urlRouterProvider.otherwise("/404");
@@ -474,21 +447,21 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
     $stateProvider
 
 
-        /**********************************************************************/
-        /**********************************************************************/
-        /***                                                                ***/
-        /***                   Static Page Routes                           ***/
-        /***                                                                ***/
-        /**********************************************************************/
-        /**********************************************************************/
-        // Landing page
+    /**********************************************************************/
+    /**********************************************************************/
+    /***                                                                ***/
+    /***                   Static Page Routes                           ***/
+    /***                                                                ***/
+    /**********************************************************************/
+    /**********************************************************************/
+    // Landing page
         .state('home', {
             url: "/",
             templateUrl: "views/home.html",
             data: {pageTitle: 'Welcome', pageSubTitle: 'Agave ToGo Microsite - Compute Edition'},
             controller: "HomeController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -506,7 +479,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Welcome', pageSubTitle: 'Agave ToGo Microsite - Compute Edition'},
             controller: "HomeController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -525,7 +498,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Page Not Found'},
             controller: "GeneralPageController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -545,7 +518,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Server Error'},
             controller: "GeneralPageController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -565,7 +538,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'FAQ'},
             controller: "FAQPageController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -593,7 +566,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'About', pageSubTitle: 'Agave ToGo Microsites'},
             controller: "GeneralPageController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -657,7 +630,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Login'},
             controller: "LoginController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveAuth',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -676,7 +649,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Logout'},
             controller: "LogoutController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveAuth',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
@@ -706,11 +679,11 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
 
         .state("apps", {
             abtract: true,
-            url:"/apps",
-            templateUrl:"views/apps/resource/resource.html",
+            url: "/apps",
+            templateUrl: "views/apps/resource/resource.html",
             controller: "AppsResourceController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -725,11 +698,11 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
 
         .state("apps-slash", {
             abtract: true,
-            url:"/apps/",
-            templateUrl:"views/apps/resource/resource.html",
+            url: "/apps/",
+            templateUrl: "views/apps/resource/resource.html",
             controller: "AppsResourceController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -747,7 +720,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             templateUrl: "views/apps/resource/details.html",
             controller: "AppsResourceDetailsController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             serie: true,
@@ -769,7 +742,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             controller: "AppsResourceStatsController",
             templateUrl: "views/apps/resource/stats.html",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -787,7 +760,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             controller: "AppsResourceRunController",
             templateUrl: "views/apps/resource/job-form.html",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             serie: true,
@@ -818,7 +791,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Jobs Management', pageSubTitle: 'Manage your private collection of jobs'},
             controller: "JobsDirectoryController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         serie: true,
                         name: 'AgaveToGo',
@@ -845,12 +818,12 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
 
         .state("jobs", {
             abtract: true,
-            url:"/jobs/:id",
-            templateUrl:"views/jobs/resource/resource.html",
+            url: "/jobs/:id",
+            templateUrl: "views/jobs/resource/resource.html",
             controller: "JobsResourceController",
             data: {pageTitle: 'Job Details', pageSubTitle: 'View details access data for a single job'},
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -869,7 +842,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             controller: "JobsResourceDetailsController",
             data: {pageTitle: 'Job Details', pageSubTitle: 'View details access data for a single job'},
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -891,7 +864,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             templateUrl: "views/jobs/resource/history.html",
             data: {pageTitle: 'Job History', pageSubTitle: 'View the event history of a single job'},
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             name: 'AgaveToGo',
@@ -936,10 +909,10 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
         .state('data-explorer-noslash', {
             url: "/data/explorer/:systemId",
             templateUrl: "views/data/explorer.html",
-            data: { pageTitle: 'File Explorer' },
+            data: {pageTitle: 'File Explorer'},
             controller: "FileExplorerController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             serie: true,
@@ -959,10 +932,10 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
         .state('data-explorer', {
             url: "/data/explorer/:systemId/{path:any}",
             templateUrl: "views/data/explorer.html",
-            data: { pageTitle: 'File Explorer' },
+            data: {pageTitle: 'File Explorer'},
             controller: "FileExplorerController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load([
                         {
                             serie: true,
@@ -994,7 +967,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'User Profile'},
             controller: "UserProfileController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
@@ -1038,7 +1011,7 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
             data: {pageTitle: 'Remote Interactive Sessions'},
             controller: "RemoteInterativeSessionController",
             resolve: {
-                deps: ['$ocLazyLoad', function($ocLazyLoad) {
+                deps: ['$ocLazyLoad', function ($ocLazyLoad) {
                     return $ocLazyLoad.load({
                         name: 'AgaveToGo',
                         insertBefore: '#ng_load_plugins_before', // load the above css files before '#ng_load_plugins_before'
@@ -1053,24 +1026,25 @@ AgaveToGo.config(['$stateProvider', '$urlRouterProvider', '$urlMatcherFactoryPro
         })
 
 
-        // // User Profile Account
-        // .state("profile.account", {
-        //     url: "/account",
-        //     templateUrl: "views/profiles/account.html",
-        //     data: {pageTitle: 'User Account'}
-        // })
-        //
-        // // User Profile Search
-        // .state("profile.search", {
-        //     url: "/search",
-        //     templateUrl: "views/profiles/search.html",
-        //     data: {pageTitle: 'Directory Search'}
-        // })
+    // // User Profile Account
+    // .state("profile.account", {
+    //     url: "/account",
+    //     templateUrl: "views/profiles/account.html",
+    //     data: {pageTitle: 'User Account'}
+    // })
+    //
+    // // User Profile Search
+    // .state("profile.search", {
+    //     url: "/search",
+    //     templateUrl: "views/profiles/search.html",
+    //     data: {pageTitle: 'Directory Search'}
+    // })
 
 }]);
 
 /* Init global settings and run the app */
-AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$localStorage', '$window', '$location', '$timeout', 'CacheFactory', 'NotificationsService', 'ProfilesController', 'TenantsController', 'MessageService', '$translate', 'Configuration', 'Storage', function($rootScope, settings, $state, $http, $templateCache, $localStorage, $window, $location, $timeout, CacheFactory, NotificationsService, ProfilesController, TenantsController, MessageService, $translate, Configuration, Storage) {
+AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$localStorage', '$window', '$location', '$timeout', 'CacheFactory', 'ProfilesController', 'TenantsController', 'MessageService', '$translate', 'Configuration', 'Storage',
+    function ($rootScope, settings, $state, $http, $templateCache, $localStorage, $window, $location, $timeout, CacheFactory, ProfilesController, TenantsController, MessageService, $translate, Configuration, Storage) {
     $rootScope.$state = $state; // state to be accessed from view
     $rootScope.$settings = settings; // state to be accessed from view
 
@@ -1105,8 +1079,7 @@ AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$
             var validTenants = [];
             angular.forEach(response, function (tenant, key) {
                 if (settings.oauth.clients[tenant.code] &&
-                    settings.oauth.clients[tenant.code].clientKey)
-                {
+                    settings.oauth.clients[tenant.code].clientKey) {
                     validTenants[tenant.code] = tenant;
                     Configuration.setBaseUri(tenant.baseUrl);
                     $localStorage.tenant = tenant;
@@ -1114,7 +1087,7 @@ AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$
                 }
             });
 
-            $timeout(function() {
+            $timeout(function () {
                 settings.tenants = validTenants;
             }, 10);
         }
@@ -1127,16 +1100,16 @@ AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$
         storageMode: 'localStorage'
     });
 
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+    $rootScope.$on('$stateChangeStart', function (event, toState, toParams, fromState, fromParams) {
         // Temp fix until I find better solution
         // This is to avoid changing url location on filemanager promise returns
-        if ((fromState.name === 'data-explorer-noslash' || fromState.name === 'data-explorer') && (toState.name !== 'data-explorer-noslash' || toState.name !== 'data-explorer')){
+        if ((fromState.name === 'data-explorer-noslash' || fromState.name === 'data-explorer') && (toState.name !== 'data-explorer-noslash' || toState.name !== 'data-explorer')) {
             $rootScope.locationChange = false;
         } else {
             $rootScope.locationChange = true;
         }
 
-        if (typeof $localStorage.tenant !== 'undefined' && typeof $localStorage.token !== 'undefined'){
+        if (typeof $localStorage.tenant !== 'undefined' && typeof $localStorage.token !== 'undefined') {
             var currentDate = new Date();
             var expirationDate = Date.parse($localStorage.token.expires_at);
             var diff = (expirationDate - currentDate) / 60000;
@@ -1148,28 +1121,28 @@ AgaveToGo.run(['$rootScope', 'settings', '$state', '$http', '$templateCache', '$
             var authToken = $localStorage.token;
             var loggedin = (authToken && (moment(authToken.expires_at).diff(moment()) <= 0));
 
-            if (typeof loggedin == undefined) {
+            if (typeof loggedin === undefined) {
                 $location.path("/logout");
                 $location.replace();
             }
         }
     });
 
-    $rootScope.$on('oauth:login', function(event, token) {
+    $rootScope.$on('oauth:login', function (event, token) {
         $localStorage.token = token;
 
         Configuration.setToken($localStorage.token.access_token);
 
 
         ProfilesController.getProfile('me').then(
-            function(profile) {
+            function (profile) {
                 console.log('oauth:login - success getting profile');
                 $localStorage.activeProfile = profile;
                 // $rootScope.$broadcast('oauth:profile', profile);
                 // $location.path("/home");
                 // $location.replace();
             },
-            function(response) {
+            function (response) {
                 console.log('oauth:login - could not get profile');
                 MessageService.handle(response, $translate.instant('error_profile_get'));
                 // $location.path("/home");

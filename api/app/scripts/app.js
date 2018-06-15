@@ -1,8 +1,6 @@
 
 'use strict';
 
-var newrelic = require('newrelic');
-
 // Express Modules
 var express      = require('express');
 var morgan       = require('morgan');

@@ -9,16 +9,14 @@ The microsites use several popular website packaging and dependency management t
     
 * [node](https://nodejs.org/) - Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine.  
 * [node package manager](https://www.npmjs.com/) (npm) - Installs, publishes and manages node programs.  
-* [bower](https://bower.io/) - Package management for javascript.  
-* [sass](http://sass-lang.com/) - Sass is the most mature, stable, and powerful professional grade CSS extension language in the world.  
+* [yarn](https://bower.io/) - Package management for javascript.  
 * [gulp](http://gulpjs.com/) - The streaming build system.
 
 To install all the project prerequisites, run the following:  
 
 ```
 cd web  
-npm install  
-bower install
+yarn
 ```  
 
 ### Building
@@ -39,7 +37,7 @@ gulp sass:watch
  
 Each microsite is sufficiently self-contained that it can be deployed as a static web application which can be served from any publicly accessible web host such as a GitHub pages, Dropbox, Google Drive, or even a folder you make publicly accessible through the Agave Platform. You simply need to copy the contents of the `web` folder to your hosting location.
  
-We have also bundled a web server into the gulp config, so you can bring the site up at [http://localhost:8080/app] by running the following command:  
+A web server is also bundled into the gulp config, so you can bring the site up at [http://localhost:8080/app] by running the following command:  
  
 ```
 gulp localhost
@@ -48,4 +46,19 @@ gulp localhost
 
 ### Configuring  
 
-The microsites were designed to provide flexible styling and customization options. You can change the look and feel of the UI by using the theme settings dialog built into the website. To customize the site behavior, you can edit the `config.js` file in the ` 
+The microsites were designed to provide flexible styling and customization options. You can change the look and feel of the UI by using the theme settings dialog built into the website. To customize the site behavior, you can edit the `settings` object in the `web/app/js/main.js` file. The available properties are listed below.
+
+```
+{
+    appId: 'cloud-runner-0.1.0u1', // the default app to be run by app users
+    tenantId: 'agave.prod', // the tenant you wish to use
+    layout: {
+        pageSidebarClosed: false, // sidebar menu state
+        pageContentWhite: true, // set page content layout
+        pageBodySolid: false, // solid body color state
+        pageAutoScrollOnLoad: 1000 // auto scroll to top on page load
+    },
+    ...
+ 
+}
+```
